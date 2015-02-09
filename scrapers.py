@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 
 from sports import Wager
-from utils import fetch_tables, parse_moneyline
+from utils import fetch_tables, parse_moneyline, make_request, TableParser
 
 
 class Site(object):
@@ -42,11 +42,13 @@ def collate_wagers(site, name_odds_pairs, sport):
     and collate the whole thing into a list of wagers.
     """
     wagers = []
-    for (name1, odds1), (name2, odds2) in name_odds_pairs:
+    for (name1, moneyline1), (name2, moneyline2) in name_odds_pairs:
         team1 = sport.find_team_from_name(name1)
         team2 = sport.find_team_from_name(name2)
+        odds1 = parse_moneyline(moneyline1)
+        odds2 = parse_moneyline(moneyline2)
 
-        if team1 is not None and team2 is not None:
+        if all(x is not None for x in (team1, team2, odds1, odds2)):
             wagers.append(Wager(site, team1, team2, odds1))
             wagers.append(Wager(site, team2, team1, odds2))
     return wagers
@@ -65,10 +67,36 @@ def bovada_nhl_scraper(site, sport):
     pairs = []
     for i in range(len(tables)/2):
         name1 = tables[i*2][2].strip()
-        moneyline1 = parse_moneyline(tables[i*2][4].strip())
+        moneyline1 = tables[i*2][4].strip()
         name2 = tables[i*2+1][1].strip()
-        moneyline2 = parse_moneyline(tables[i*2+1][3].strip())
+        moneyline2 = tables[i*2+1][3].strip()
 
         if moneyline1 is not None and moneyline2 is not None:
             pairs.append(((name1, moneyline1), (name2, moneyline2)))
-    return collate_wagers(site, pairs, sport)
+
+    wagers = collate_wagers(site, pairs, sport)
+    return wagers
+
+
+def mybookie_nhl_scraper(site, sport):
+    page = make_request("http://mybookie.ag/sportsbook/nhl-betting-lines/")
+    tp = TableParser()
+    tp.feed(page)
+    tables = tp.get_tables()
+
+    # Get rid of garbage lines in the table
+    tables = tables[0][1:]
+
+    # Find team names and moneylines
+    pairs = []
+    for i in range(len(tables)/2):
+        name1 = tables[i*2][2].strip().split(" ")[-1]
+        name2 = tables[i*2+1][1].strip().split(" ")[-1]
+        moneyline1 = str(tables[i*2][-1]).strip()
+        moneyline2 = str(tables[i*2+1][-1]).strip()
+
+        if moneyline1 is not None and moneyline2 is not None:
+            pairs.append(((name1, moneyline1), (name2, moneyline2)))
+
+    wagers = collate_wagers(site, pairs, sport)
+    return wagers

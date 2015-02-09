@@ -5,7 +5,7 @@ from datetime import datetime
 from sports import find_arb_pairs
 from utils import archive
 from config import nhl
-from config import bovada
+from config import bovada, mybookie
 from config import ARCHIVE_PATH
 
 
@@ -22,7 +22,7 @@ def main():
         os.mkdir(ARCHIVE_PATH)
 
     sports = [nhl]
-    sites = [bovada]
+    sites = [bovada, mybookie]
 
     for sport in sports:
         wagers = []

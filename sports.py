@@ -49,12 +49,15 @@ class Sport(object):
 
     def find_team_from_name(self, string):
         """
-        Given an input string, find the first team that matches the string.
+        Given an input string, find the team that matches the string. If
+        multiple teams or no teams match, return None.
         """
-        for team in self.teams:
-            if team.matches_team_name(string):
-                return team
-        return None
+        matches = [t for t in self.teams if t.matches_team_name(string)]
+
+        if len(matches) == 1:
+            return matches[0]
+        else:
+            return None
 
 
 class Wager(object):

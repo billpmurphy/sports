@@ -1,7 +1,7 @@
 import csv
 
 from scrapers import Site
-from scrapers import bovada_nhl_scraper
+from scrapers import bovada_nhl_scraper, mybookie_nhl_scraper
 from sports import Sport
 from sports import Team
 
@@ -29,3 +29,4 @@ nhl = Sport("nhl", teams=load_teams("nhl", data_path=DATA_PATH))
 
 # Site objects
 bovada = Site("bovada.lv", {nhl: bovada_nhl_scraper})
+mybookie = Site("mybookie", {nhl: mybookie_nhl_scraper})
