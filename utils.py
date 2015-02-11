@@ -2,8 +2,8 @@ import HTMLParser
 import logging
 import pickle
 import re
-import urllib2
 from datetime import datetime
+from urllib2 import Request, urlopen, URLError, HTTPError
 
 
 logger = logging.getLogger(__name__)
@@ -15,14 +15,46 @@ def make_request(url):
     """
     Send an HTTP request with the User-Agent set to the Firefox default, to
     make sure sites serve the page we want (and don't block us).
+    If we cannot retrieve the page, log the error and return None.
     """
-    req = urllib2.Request(url,
-                          headers={"User-Agent":
-                                   "Mozilla/5.0 (Windows NT 6.1; WOW64; " +
-                                   "rv:31.0 Gecko/20100101 Firefox/31.0"})
+    logger = logging.getLogger("http_request")
+
+    ff_agent = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:35.0)" + \
+               "Gecko/20100101 Firefox/35.0"
+    req = Request(url, headers={"User-Agent": ff_agent})
+
     logger.info("Sending request to %s", url)
-    page = urllib2.urlopen(req).read()
-    logger.info("Fetched page %s", url)
+    try:
+        response = urlopen(req)
+    except URLError as e:
+        if hasattr(e, "reason"):
+            logger.error("Failed to reach a server. URL: %s Reason: %s",
+                    (url, e.reason))
+        elif hasattr(e, "code"):
+            logger.error("The server couldn't fulfill the request. " +
+                         "URL: %s Error code: %s", (url, e.code))
+        else:
+            logger.error("Unknown URLError while making request. " +
+                         "URL: %s Error: %s", (url, str(e)))
+        return
+    except Exception as e:
+        logger.error("Unknown Exception while making request. " +
+                     "URL: %s Exception: %s", (url, str(e)))
+        return
+
+    response_url = response.geturl()
+    if response_url != url:
+        logging.warn("Response url does not match requested url. " +
+                     "Request: %s Response %s" % (url, response_url))
+
+    try:
+        page = response.read()
+    except Exception as e:
+        logger.error("Failed to read page from response. URL: %s Error: %s",
+                     (url, str(e)))
+        return
+
+    logger.info("Successfully fetched page %s", url)
     return page
 
 
@@ -79,16 +111,6 @@ class TableParser(HTMLParser.HTMLParser):
         self.register = None
 
 
-def fetch_tables(url):
-    """
-    Fetch a page from a URL, strip it, grab the tables.
-    """
-    page = strip(make_request(url))
-    tp = TableParser()
-    tp.feed(strip(page))
-    return tp.get_tables()
-
-
 def parse_moneyline(string):
     """
     Attempt to parse a string containing a moneyline. If the string cannot be
@@ -109,8 +131,16 @@ def parse_moneyline(string):
 
 def archive(archive_path, filename,  obj):
     now = datetime.now().strftime("%Y-%M-%d %H:%M:%S")
+
     archive_file = "%s%s %s.pickle" % (archive_path, now, filename)
-    with open(archive_file, "wb") as f:
-        pickle.dump(obj, f)
     logger.info("Archiving objects in '%s'", archive_file)
+
+    try:
+        with open(archive_file, "wb") as f:
+            pickle.dump(obj, f)
+    except Exception as e:
+        logging.error("Failed to archive objects. Path: %s", archive_file)
+    else:
+        logging.info("Archive successful. Path: %s", archive_file)
+
     return

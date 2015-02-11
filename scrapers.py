@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 
 from sports import Wager
-from utils import fetch_tables, parse_moneyline, make_request, TableParser
+from utils import strip, parse_moneyline, make_request, TableParser
 
 
 logger = logging.getLogger(__name__)
@@ -59,7 +59,10 @@ def collate_wagers(site, name_odds_pairs, sport):
 
 def bovada_nhl_scraper(site, sport):
     url = "http://sports.bovada.lv/sports-betting/nhl-hockey-lines.jsp"
-    tables = fetch_tables(url)
+    tp = TableParser()
+    tp.feed(strip(page))
+    tables = tp.get_tables()
+
 
     # Get rid of garbage lines in the table
     tables = tables[1:-1]
@@ -86,7 +89,6 @@ def mybookie_nhl_scraper(site, sport):
     tp = TableParser()
     tp.feed(page)
     tables = tp.get_tables()
-    print tables
 
     # Get rid of garbage lines in the table
     tables = tables[0][1:]
