@@ -7,34 +7,63 @@ from utils import strip, parse_moneyline, make_request, TableParser
 
 logger = logging.getLogger(__name__)
 
+class Scraper(object):
+    """
+    Represents a web page and a function for extracting the wagers from it.
+    """
+    def __init__(self, sport, site, url, extract_fn):
+        self.sport = sport
+        self.site = site
+        self.url = url
+        self.extract_fn = extract_fn
+
+    def fetch_page(self):
+        logger = logging.getLogger("Scraper %s %s" % (self.sport, self.site))
+        logger.info("Fetching page. URL: %s", self.url)
+        return make_request(self.url)
+
+    def extract_wagers_from_page(self, page):
+        logger = logging.getLogger("Scraper %s %s" % (self.sport, self.site))
+        logger.info("Extracting wagers from page.")
+        wagers =  self.extract_fn(self.site, self.sport, page)
+        logger.info("Extracted %s wagers from page.", len(wagers))
+        return wagers
+
+
+class SportNotFoundException(Exception):
+    pass
+
 
 class Site(object):
     """
     Represents a website, including a dictionary that maps Sport objects to
     functions that can scrape bets for that sport.
     """
-    def __init__(self, name, scraper_fn_dict):
+    def __init__(self, name, scrapers):
         self.name = name
-        self.scraper_fn_dict = scraper_fn_dict
+        self.scrapers = scrapers
         self.last_scrape_time = None
 
     def __repr__(self):
         return self.name
 
-    def scrape(self, sport):
-        logger.info("Requested scrape for (%s;%s).",
-                    self.name, sport)
-        if sport in self.scraper_fn_dict:
-            wagers = self.scraper_fn_dict[sport](self, sport)
-
-            logger.info("Scrape (%s;%s) finished: %s wagers found.",
-                        self.name, sport, len(wagers))
-            self.last_scrape_time = datetime.now()
-            return wagers
+    def fetch_page_for_sport(self, sport):
+        logger = logging.getLogger("Site %s" % self.name)
+        logger.info("Requested fetch for %s", sport)
+        if sport not in self.scrapers.keys():
+            logger.warn("Sport %s not available to fetch.", sport)
+            raise SportNotFoundException(sport)
         else:
-            logger.info("Scraper for (%s;%s) unavailable; skipping",
-                        self.name, sport)
-            return []
+            return self.scrapers[sport].fetch_page()
+
+    def extract_wagers_for_sport(self, sport, page):
+        logger = logging.getLogger("Site %s" % self.name)
+        logger.info("Requested extract for %s", sport)
+        if sport not in self.scrapers.keys():
+            logger.warn("Sport %s not available to extract.", sport)
+            raise SportNotFoundException(sport)
+        else:
+            return self.scrapers[sport].extract_wagers_from_page(page)
 
 
 # Scraping/handling functions - hopefully there can be some reuse here
@@ -57,8 +86,7 @@ def collate_wagers(site, name_odds_pairs, sport):
     return wagers
 
 
-def bovada_nhl_scraper(site, sport):
-    url = "http://sports.bovada.lv/sports-betting/nhl-hockey-lines.jsp"
+def bovada_nhl_scraper(site, sport, page):
     tp = TableParser()
     tp.feed(strip(page))
     tables = tp.get_tables()
@@ -73,8 +101,8 @@ def bovada_nhl_scraper(site, sport):
     pairs = []
     for i in range(len(tables)/2):
         name1 = tables[i*2][2].strip()
-        moneyline1 = tables[i*2][4].strip()
         name2 = tables[i*2+1][1].strip()
+        moneyline1 = tables[i*2][4].strip()
         moneyline2 = tables[i*2+1][3].strip()
 
         if moneyline1 is not None and moneyline2 is not None:
@@ -84,8 +112,7 @@ def bovada_nhl_scraper(site, sport):
     return wagers
 
 
-def mybookie_nhl_scraper(site, sport):
-    page = make_request("http://mybookie.ag/sportsbook/nhl-betting-lines/")
+def mybookie_nhl_scraper(site, sport, page):
     tp = TableParser()
     tp.feed(page)
     tables = tp.get_tables()

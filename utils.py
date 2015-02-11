@@ -129,18 +129,20 @@ def parse_moneyline(string):
 
 # Archiving/logging related utils
 
-def archive(archive_path, filename,  obj):
-    now = datetime.now().strftime("%Y-%M-%d %H:%M:%S")
+def archive(archive_path, filename, obj):
+    now = datetime.now().strftime("%Y-%M-%d_%H:%M:%S")
 
-    archive_file = "%s%s %s.pickle" % (archive_path, now, filename)
+    archive_file = "%s%s_%s.pickle" % (archive_path, now, filename)
     logger.info("Archiving objects in '%s'", archive_file)
 
     try:
         with open(archive_file, "wb") as f:
             pickle.dump(obj, f)
+    except pickle.PickleError as e:
+        logger.error("Cannot pickle object. Error %s", e)
     except Exception as e:
-        logging.error("Failed to archive objects. Path: %s", archive_file)
+        logger.error("Failed to archive objects. Error: %s", e)
     else:
-        logging.info("Archive successful. Path: %s", archive_file)
+        logger.info("Archive successful. Path: %s", archive_file)
 
     return
