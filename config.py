@@ -8,6 +8,7 @@ from sports import Team
 
 DATA_PATH = "data/"
 ARCHIVE_PATH = "archive/"
+LOG_PATH = "logs/"
 
 
 def load_teams(sport_name, data_path):

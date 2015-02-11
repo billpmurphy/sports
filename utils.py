@@ -6,6 +6,9 @@ import urllib2
 from datetime import datetime
 
 
+logger = logging.getLogger(__name__)
+
+
 # Web scraping utils
 
 def make_request(url):
@@ -17,9 +20,9 @@ def make_request(url):
                           headers={"User-Agent":
                                    "Mozilla/5.0 (Windows NT 6.1; WOW64; " +
                                    "rv:31.0 Gecko/20100101 Firefox/31.0"})
-    logging.info("Sending request to %s", url)
+    logger.info("Sending request to %s", url)
     page = urllib2.urlopen(req).read()
-    logging.info("Fetched page %s", url)
+    logger.info("Fetched page %s", url)
     return page
 
 
@@ -30,7 +33,7 @@ def strip(html_string):
     """
     html_string = html_string.strip()
     html_string = re.sub("[^\x00-\x7F]", " ", html_string)
-    html_string = re.sub("\n|\r|\t", " ", html_string)
+    html_string = re.sub("&nbsp;|\n|\r|\t", " ", html_string)
     html_string = re.sub("<(p|span|div|a).+?>", " ", html_string)
     html_string = re.sub("</(p|span|div|a)>", " ", html_string)
     html_string = re.sub("<input.+?/>", " ", html_string)
@@ -109,5 +112,5 @@ def archive(archive_path, filename,  obj):
     archive_file = "%s%s %s.pickle" % (archive_path, now, filename)
     with open(archive_file, "wb") as f:
         pickle.dump(obj, f)
-    logging.info("Archiving objects in '%s'", archive_file)
+    logger.info("Archiving objects in '%s'", archive_file)
     return

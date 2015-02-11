@@ -6,7 +6,7 @@ from sports import find_arb_pairs
 from utils import archive
 from config import nhl
 from config import bovada, mybookie
-from config import ARCHIVE_PATH
+from config import ARCHIVE_PATH, LOG_PATH
 
 
 def main():
@@ -14,12 +14,14 @@ def main():
         format="%(levelname)s,%(name)s,%(asctime)s,\"%(message)s\"",
         datefmt="%Y-%m-%d %H:%M:%S",
         level=logging.DEBUG,
-        filename="test_log %s.log" %
-                 datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    logging.info("Starting up.")
+        filename="%stest_log %s.log" %
+                 (LOG_PATH, datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+    logger = logging.getLogger(__name__)
+    logger.info("Starting up.")
 
-    if not os.path.exists(ARCHIVE_PATH):
-        os.mkdir(ARCHIVE_PATH)
+    for file_path in [ARCHIVE_PATH, LOG_PATH]:
+        if not os.path.exists(file_path):
+            os.mkdir(file_path)
 
     sports = [nhl]
     sites = [bovada, mybookie]
@@ -33,7 +35,7 @@ def main():
                         scraped_wagers)
             wagers += scraped_wagers
         arb_pairs = find_arb_pairs(wagers)
-        logging.info("Arb pairs for %s: %s", sport.sport_name, arb_pairs)
+        logger.info("Arb pairs for %s: %s", sport.sport_name, arb_pairs)
 
 
 if __name__ == "__main__":

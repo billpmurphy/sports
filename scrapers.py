@@ -5,6 +5,9 @@ from sports import Wager
 from utils import fetch_tables, parse_moneyline, make_request, TableParser
 
 
+logger = logging.getLogger(__name__)
+
+
 class Site(object):
     """
     Represents a website, including a dictionary that maps Sport objects to
@@ -19,18 +22,18 @@ class Site(object):
         return self.name
 
     def scrape(self, sport):
-        logging.info("Requested scrape for (%s;%s).",
-                     self.name, sport)
+        logger.info("Requested scrape for (%s;%s).",
+                    self.name, sport)
         if sport in self.scraper_fn_dict:
             wagers = self.scraper_fn_dict[sport](self, sport)
 
-            logging.info("Scrape (%s;%s) finished: %s wagers found.",
-                         self.name, sport, len(wagers))
+            logger.info("Scrape (%s;%s) finished: %s wagers found.",
+                        self.name, sport, len(wagers))
             self.last_scrape_time = datetime.now()
             return wagers
         else:
-            logging.info("Scraper for (%s;%s) unavailable; skipping",
-                         self.name, sport)
+            logger.info("Scraper for (%s;%s) unavailable; skipping",
+                        self.name, sport)
             return []
 
 
@@ -83,6 +86,7 @@ def mybookie_nhl_scraper(site, sport):
     tp = TableParser()
     tp.feed(page)
     tables = tp.get_tables()
+    print tables
 
     # Get rid of garbage lines in the table
     tables = tables[0][1:]
