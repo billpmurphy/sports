@@ -1,11 +1,11 @@
 import logging
-from datetime import datetime
 
 from sports import Wager
 from utils import strip, parse_moneyline, make_request, TableParser
 
 
 logger = logging.getLogger(__name__)
+
 
 class Scraper(object):
     """
@@ -25,7 +25,7 @@ class Scraper(object):
     def extract_wagers_from_page(self, page):
         logger = logging.getLogger("Scraper %s %s" % (self.sport, self.site))
         logger.info("Extracting wagers from page.")
-        wagers =  self.extract_fn(self.site, self.sport, page)
+        wagers = self.extract_fn(self.site, self.sport, page)
         logger.info("Extracted %s wagers from page.", len(wagers))
         return wagers
 
@@ -90,7 +90,6 @@ def bovada_nhl_scraper(site, sport, page):
     tp = TableParser()
     tp.feed(strip(page))
     tables = tp.get_tables()
-
 
     # Get rid of garbage lines in the table
     tables = tables[1:-1]
