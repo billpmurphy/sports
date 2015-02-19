@@ -27,6 +27,7 @@ Eventual goal:
 
 
 Notes on sites:
+
 | Site | Notes |
 | ---- | ----- |
 |http://www.bovada.lv/ | Have NHL scraper |
@@ -46,5 +47,3 @@ Notes on sites:
 |http://www.5dimes.eu | Uses JS to load |
 |http://www.sportsbettingonline.ag | Uses JS to load |
 |http://www.vietbet.eu | Login required |
-
-
