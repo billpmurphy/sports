@@ -32,20 +32,20 @@ def make_request(url):
                     (url, e.reason))
         elif hasattr(e, "code"):
             logger.error("The server couldn't fulfill the request. " +
-                         "URL: %s Error code: %s", (url, e.code))
+                         "URL: %s Error code: %s", url, e.code)
         else:
             logger.error("Unknown URLError while making request. " +
-                         "URL: %s Error: %s", (url, str(e)))
+                         "URL: %s Error: %s", url, str(e))
         return
     except Exception as e:
         logger.error("Unknown Exception while making request. " +
-                     "URL: %s Exception: %s", (url, str(e)))
+                     "URL: %s Exception: %s", url, str(e))
         return
 
     response_url = response.geturl()
     if response_url != url:
         logging.warn("Response url does not match requested url. " +
-                     "Request: %s Response %s" % (url, response_url))
+                     "Request: %s Response %s", url, response_url)
 
     try:
         page = response.read()
@@ -65,7 +65,7 @@ def strip(html_string):
     """
     html_string = html_string.strip()
     html_string = re.sub("[^\x00-\x7F]", " ", html_string)
-    html_string = re.sub("&nbsp;|\n|\r|\t", " ", html_string)
+    html_string = re.sub("&nbsp;|\n|\r|\t|\r\n", " ", html_string)
     html_string = re.sub("<(p|span|div|a).+?>", " ", html_string)
     html_string = re.sub("</(p|span|div|a)>", " ", html_string)
     html_string = re.sub("<input.+?/>", " ", html_string)
@@ -129,7 +129,22 @@ def parse_moneyline(string):
 
 # Archiving/logging related utils
 
-def archive(archive_path, filename, obj):
+def archive_page(archive_path, filename, page):
+    now = datetime.now().strftime("%Y-%M-%d_%H:%M:%S")
+    archive_file = "%s%s_%s.html" % (archive_path, now, filename)
+    logger.info("Archiving page in '%s'", archive_file)
+
+    try:
+        with open(archive_file, "wb") as f:
+            f.write(page)
+    except Exception as e:
+        logger.error("Failed to archive page Error: %s", e)
+    else:
+        logger.info("Archive of page successful. Path: '%s'", archive_file)
+    return
+
+
+def archive_pickle(archive_path, filename, obj):
     now = datetime.now().strftime("%Y-%M-%d_%H:%M:%S")
 
     archive_file = "%s%s_%s.pickle" % (archive_path, now, filename)
@@ -143,6 +158,5 @@ def archive(archive_path, filename, obj):
     except Exception as e:
         logger.error("Failed to archive objects. Error: %s", e)
     else:
-        logger.info("Archive successful. Path: %s", archive_file)
-
+        logger.info("Archive of objects successful. Path: '%s'", archive_file)
     return

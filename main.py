@@ -5,9 +5,9 @@ from time import sleep
 
 from sports import find_arb_pairs
 from config import nhl
-from config import bovada, mybookie
+from config import bovada, mybookie, topbet, bodog, sportsinteraction
 from config import ARCHIVE_PATH, LOG_PATH
-from utils import archive
+from utils import archive_page, archive_pickle
 
 
 def set_up():
@@ -30,27 +30,35 @@ def main():
     logger = logging.getLogger(__name__)
     logger.info("Starting up.")
 
+    wait_time = 60 * 10
+
     # Scrape all the sites we know, check for arbs
     sports = [nhl]
-    sites = [bovada, mybookie]
+    sites = [bovada, mybookie, topbet, bodog, sportsinteraction]
 
     while True:
         for sport in sports:
-            wagers = []
             pages = [site.fetch_page_for_sport(sport) for site in sites]
+            site_pages = [(page, site) for (page, site) in zip(pages, sites)
+                          if page is not None]
 
-            for (page, site) in zip(pages, sites):
-                if page is not None:
-                    scraped_wagers = site.extract_wagers_for_sport(sport, page)
+            wagers = []
+            for (page, site) in site_pages:
+                archive_page(ARCHIVE_PATH, "%s_%s_page" %
+                             (site.name, sport.sport_name),
+                             page)
 
-                    if len(scraped_wagers) > 0:
-                        archive(ARCHIVE_PATH, "%s_%s" %
-                                (site.name, sport.sport_name),
-                                scraped_wagers)
-                        wagers += scraped_wagers
+                scraped_wagers = site.extract_wagers_for_sport(sport, page)
+
+                if len(scraped_wagers) > 0:
+                    archive_pickle(ARCHIVE_PATH, "%s_%s_wagers" %
+                                   (site.name, sport.sport_name),
+                                   scraped_wagers)
+                    wagers += scraped_wagers
             arb_pairs = find_arb_pairs(wagers)
             logger.info("Arb pairs for %s: %s", sport.sport_name, arb_pairs)
-        sleep(60 * 10)
+        logger.info("Sleeping for %s seconds.", wait_time)
+        sleep(wait_time)
 
 
 if __name__ == "__main__":

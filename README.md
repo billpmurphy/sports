@@ -32,12 +32,12 @@ Notes on sites:
 | ---- | ----- |
 |http://www.bovada.lv/ | Have NHL scraper |
 |http://mybookie.ag | Have NHL scraper |
-|http://topbet.eu/sportsbook/nhl | No JS, should be doable |
+|http://topbet.eu/sportsbook | Have NHL scraper |
+|http://sports.bodog.eu | Have NHL scraper |
+|http://www.sportsinteraction.com | Have NHL scraper |
 |https://www.sportsbook.ag | No JS, should be doable |
-|http://sports.bodog.eu | No JS, should be doable |
 |http://www.pinnaclesports.com/ | No JS, should be doable |
 |https://sports.bwin.com | No JS, should be doable |
-|http://www.sportsinteraction.com | No JS, should be doable |
 |http://www.betus.com.pa | No JS, should be doable |
 |http://www.sportsbetting.ag | Uses JS to load |
 |http://www.betonline.ag | Uses JS to load |

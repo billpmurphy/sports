@@ -1,4 +1,5 @@
 import logging
+import re
 
 from sports import Wager
 from utils import strip, parse_moneyline, make_request, TableParser
@@ -25,7 +26,12 @@ class Scraper(object):
     def extract_wagers_from_page(self, page):
         logger = logging.getLogger("Scraper %s %s" % (self.sport, self.site))
         logger.info("Extracting wagers from page.")
-        wagers = self.extract_fn(self.site, self.sport, page)
+        try:
+            wagers = self.extract_fn(self.site, self.sport, page)
+        except Exception as e:
+            logger.error("Exception in extraction fn for (%s, %s), %s: %s",
+                    self.sport, self.site, str(e), e.message)
+            return []
         logger.info("Extracted %s wagers from page.", len(wagers))
         return wagers
 
@@ -129,6 +135,70 @@ def mybookie_nhl_scraper(site, sport, page):
 
         if moneyline1 is not None and moneyline2 is not None:
             pairs.append(((name1, moneyline1), (name2, moneyline2)))
+
+    wagers = collate_wagers(site, pairs, sport)
+    return wagers
+
+
+def topbet_nhl_scraper(site, sport, page):
+    tp = TableParser()
+    tp.feed(page)
+    tables = tp.get_tables()
+
+    # Get rid of garbage tables
+    tables = [t for t in tables if len(t) == 3 and t[0][0] == t[0][1] == 0]
+
+    # Find team names and moneylines
+    pairs = []
+    for table in tables:
+        name1 = table[1][1].strip()
+        name2 = table[2][1].strip()
+        moneyline1 = table[1][5].strip()
+        moneyline2 = table[2][5].strip()
+        pairs.append(((name1, moneyline1), (name2, moneyline2)))
+
+    wagers = collate_wagers(site, pairs, sport)
+    return wagers
+
+
+def bodog_nhl_scraper(site, sport, page):
+    tp = TableParser()
+    tp.feed(strip(page))
+    tables = tp.get_tables()
+
+    # Get rid of garbage rows
+    rows = [r for t in tables for r in t if len(r) > 3][1:]
+
+    # Find team names and moneylines
+    pairs = []
+    for i in range(len(rows)/2):
+        name1 = rows[i*2][2].strip()
+        name2 = rows[i*2+1][1].strip()
+        moneyline1 = rows[i*2][4].strip()
+        moneyline2 = rows[i*2+1][3].strip()
+        pairs.append(((name1, moneyline1), (name2, moneyline2)))
+
+    wagers = collate_wagers(site, pairs, sport)
+    return wagers
+
+
+def sportsinteraction_nhl_scraper(site, sport, page):
+    # pull rows with regular moneylines out of page
+    page_stripped = re.sub("\t|\r\n|\n", "", page)
+    row_pattern = "<span class=\"name\">(.+?)</span>" + \
+                  "<span class=\"handicap\">(.+?)</span>" + \
+                  "<span class=\"price\">(.+?)</span>"
+    rows = re.findall(row_pattern, page_stripped)
+    moneyline_rows = [(r[0], r[2]) for r in rows if r[1].strip() == "&nbsp;"]
+
+    # Find team names and moneylines
+    pairs = []
+    for i in range(len(moneyline_rows)/2):
+        name1 = moneyline_rows[i*2][0].strip()
+        name2 = moneyline_rows[i*2+1][0].strip()
+        moneyline1 = moneyline_rows[i*2][1].strip()
+        moneyline2 = moneyline_rows[i*2+1][1].strip()
+        pairs.append(((name1, moneyline1), (name2, moneyline2)))
 
     wagers = collate_wagers(site, pairs, sport)
     return wagers
