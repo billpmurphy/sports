@@ -1,22 +1,14 @@
 Getting this started.
 
 TODO:
-* Refactor individual scrapers into seperate module. Change Scrapers so that
-  each scraper has 2 functions: fetch, and extract. Fetch will have type `url
-  -> html string`, and can use selenium or whatever else to correctly format
-  the page (if we need to deal with javascript, otherwise it can just use
-  `make_request`). Extract will have type `html_string -> [((name, moneyline),
-  (name, moneyline))]`. This removes the need to have the current site and
-  sport objects available to the extract function or the fetch function.
 * More scraper functions for popular betting sites. This is a bit of a hassle
   but it's the main thing that needs to get done.
 * Error handling (including good logging, responding well to failure, etc.) for
   critical pieces, mainly HTTP request sending.
 * Better error handling for those annoying "cannot parse the thing" situations rather than
   returning/checking for None.
-* Is there some better way of setting up Sports/Site objects than config.py?
-  Some kind of factory pattern?
 * More lists of teams for different sports, and alternate names for teams.
+* Async requests for scrapers that just use `make_request`.
 
 
 
