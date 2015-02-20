@@ -3,11 +3,18 @@ import os
 from datetime import datetime
 from time import sleep
 
-from sports import find_arb_pairs
-from config import nhl
-from config import bovada, mybookie, topbet, bodog, sportsinteraction
-from config import ARCHIVE_PATH, LOG_PATH
-from utils import archive_page, archive_pickle
+from app.utils import archive_page, archive_pickle
+from app.sports import find_arb_pairs
+from data.data import nhl
+from scrapers.bovada import bovada
+from scrapers.mybookie import mybookie
+from scrapers.topbet import topbet
+from scrapers.bodog import bodog
+from scrapers.sportsinteraction import sportsinteraction
+
+
+ARCHIVE_PATH = "archive/"
+LOG_PATH = "logs/"
 
 
 def set_up():
@@ -58,6 +65,7 @@ def main():
             arb_pairs = find_arb_pairs(wagers)
             logger.info("Arb pairs for %s: %s", sport.sport_name, arb_pairs)
         logger.info("Sleeping for %s seconds.", wait_time)
+        return
         sleep(wait_time)
 
 
