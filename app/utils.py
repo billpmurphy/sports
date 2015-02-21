@@ -68,6 +68,7 @@ def strip(html_string):
     html_string = re.sub("&nbsp;|\n|\r|\t|\r\n", " ", html_string)
     html_string = re.sub("<(p|span|div|a).+?>", " ", html_string)
     html_string = re.sub("</(p|span|div|a)>", " ", html_string)
+    html_string = re.sub("</?(b|em|strong|small)>", " ", html_string)
     html_string = re.sub("<input.+?/>", " ", html_string)
     html_string = re.sub("\s{2,}", " ", html_string)
     html_string = html_string.encode("ascii", "ignore")

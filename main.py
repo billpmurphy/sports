@@ -6,6 +6,7 @@ from time import sleep
 from app.utils import archive_page, archive_pickle
 from app.sports import find_arb_pairs
 from data.data import nhl
+from scrapers.betdsi import betdsi
 from scrapers.bodog import bodog
 from scrapers.bovada import bovada
 from scrapers.mybookie import mybookie
@@ -42,7 +43,8 @@ def main():
 
     # Scrape all the sites we know, check for arbs
     sports = [nhl]
-    sites = [bovada, mybookie, topbet, bodog, sportsinteraction, sportsbook]
+    sites = [bovada, mybookie, topbet, bodog, sportsinteraction, sportsbook,
+             betdsi]
 
     while True:
         for sport in sports:

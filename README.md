@@ -21,22 +21,22 @@ Eventual goal:
 
 Notes on sites:
 
-| Site | Notes |
-| ---- | ----- |
-|http://www.bovada.lv/ | Have NHL scraper |
-|http://mybookie.ag | Have NHL scraper |
-|http://topbet.eu/sportsbook | Have NHL scraper |
-|http://sports.bodog.eu | Have NHL scraper |
-|http://www.sportsinteraction.com | Have NHL scraper |
-|https://www.sportsbook.ag | No JS, should be doable |
-|http://www.pinnaclesports.com/ | No JS, should be doable |
-|https://sports.bwin.com | No JS, should be doable |
-|http://www.betus.com.pa | No JS, should be doable |
-|http://www.sportsbetting.ag | Uses JS to load |
-|http://www.betonline.ag | Uses JS to load |
-|http://www.bookmaker.eu/sportsbook.aspx | Uses JS to load |
-|http://www.betdsi.eu | Uses JS to load |
-|http://www.5dimes.eu | Uses JS to load |
-|http://www.sportsbettingonline.ag | Uses JS to load |
-|http://www.vietbet.eu | Login required |
-|http://www.wagerweb.ag | Login required |
+| Site                            | NHL | NBA | JS? |
+| ------------------------------- | --- | --- | --- |
+|http://www.bovada.lv             |  x  |     |  no |
+|http://mybookie.ag               |  x  |     |  no |
+|http://topbet.eu/sportsbook      |  x  |     |  no |
+|http://sports.bodog.eu           |  x  |     |  no |
+|http://www.sportsinteraction.com |  x  |     |  no |
+|https://www.sportsbook.ag        |  x  |     |  no |
+|http://www.betdsi.eu             |  x  |     |  no |
+|http://www.sportsbetting.ag      |  x  |     | yes |
+|http://www.pinnaclesports.com    |     |     |  no |
+|https://sports.bwin.com          |     |     |  no |
+|http://www.betus.com.pa          |     |     |  no |
+|http://www.betonline.ag          |     |     | yes |
+|http://www.bookmaker.eu          |     |     | yes |
+|http://www.5dimes.eu             |     |     | yes |
+|http://www.sportsbettingonline.ag|     |     | yes |
+|http://www.vietbet.eu            |     |     | yes |
+|http://www.wagerweb.ag           |     |     | yes |
