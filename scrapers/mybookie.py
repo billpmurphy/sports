@@ -18,14 +18,12 @@ def mybookie_nhl_extractor(page):
         name2 = tables[i*2+1][1].strip().split(" ")[-1]
         moneyline1 = str(tables[i*2][-1]).strip()
         moneyline2 = str(tables[i*2+1][-1]).strip()
-
-        if moneyline1 is not None and moneyline2 is not None:
-            pairs.append(((name1, moneyline1), (name2, moneyline2)))
+        pairs.append(((name1, moneyline1), (name2, moneyline2)))
     return pairs
 
 
 mybookie = Site("mybookie.ag", {})
 mybookie.scrapers[nhl] = Scraper(
-        url="http://mybookie.ag/sportsbook/nhl-betting-lines/",
-        fetch_fn=make_request,
-        extract_fn=mybookie_nhl_extractor)
+    url="http://mybookie.ag/sportsbook/nhl-betting-lines/",
+    fetch_fn=make_request,
+    extract_fn=mybookie_nhl_extractor)

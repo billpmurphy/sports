@@ -1,8 +1,7 @@
 import logging
-import re
 
 from sports import Wager
-from utils import strip, parse_moneyline, make_request, TableParser
+from utils import parse_moneyline
 
 
 logger = logging.getLogger(__name__)
@@ -42,7 +41,6 @@ class Scraper(object):
             logger.error("Exception in extraction fn. %s: %s",
                          str(e), e.message)
             return []
-        logger.info("Extracted %s wagers from page.", len(wagers))
         return wagers
 
 
@@ -80,7 +78,9 @@ class Site(object):
             raise SportNotFoundException(sport)
         else:
             wagers = self.scrapers[sport].extract_wager_pairs_from_page(page)
-            return collate_wagers(self, wagers, sport)
+            wagers = collate_wagers(self, wagers, sport)
+            logger.info("Extracted %s wagers from page.", len(wagers))
+            return wagers
 
 
 # Scraping/handling functions - hopefully there can be some reuse here

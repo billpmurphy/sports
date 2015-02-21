@@ -24,6 +24,6 @@ def bodog_nhl_extractor(page):
 
 bodog = Site("sports.bodog.eu", {})
 bodog.scrapers[nhl] = Scraper(
-        url="http://sports.bodog.eu/sports-betting/nhl-hockey-lines.jsp",
-        fetch_fn=make_request,
-        extract_fn=bodog_nhl_extractor)
+    url="http://sports.bodog.eu/sports-betting/nhl-hockey-lines.jsp",
+    fetch_fn=make_request,
+    extract_fn=bodog_nhl_extractor)

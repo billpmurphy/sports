@@ -3,7 +3,7 @@ import logging
 import pickle
 import re
 from datetime import datetime
-from urllib2 import Request, urlopen, URLError, HTTPError
+from urllib2 import Request, urlopen, URLError
 
 
 logger = logging.getLogger(__name__)
@@ -29,7 +29,7 @@ def make_request(url):
     except URLError as e:
         if hasattr(e, "reason"):
             logger.error("Failed to reach a server. URL: %s Reason: %s",
-                    (url, e.reason))
+                         (url, e.reason))
         elif hasattr(e, "code"):
             logger.error("The server couldn't fulfill the request. " +
                          "URL: %s Error code: %s", url, e.code)
@@ -122,8 +122,11 @@ def parse_moneyline(string):
         line = float(string[1:])
         if string[0] == '+':
             return line/100.0
-        else:
+        elif string[0] == '-':
             return 100.0/line
+    elif re.match("[0-9]+?", string):
+        line = float(string)
+        return line/100.0
     return
 
 

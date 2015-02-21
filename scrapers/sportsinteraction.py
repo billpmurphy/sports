@@ -27,6 +27,6 @@ def sportsinteraction_nhl_extractor(page):
 
 sportsinteraction = Site("sportsinteraction.com", {})
 sportsinteraction.scrapers[nhl] = Scraper(
-        url="http://www.sportsinteraction.com/hockey/nhl-betting-lines/",
-        fetch_fn=make_request,
-        extract_fn=sportsinteraction_nhl_extractor)
+    url="http://www.sportsinteraction.com/hockey/nhl-betting-lines/",
+    fetch_fn=make_request,
+    extract_fn=sportsinteraction_nhl_extractor)

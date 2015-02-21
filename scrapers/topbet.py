@@ -1,5 +1,5 @@
 from app.sites import Site, Scraper
-from app.utils import make_request, strip, TableParser
+from app.utils import make_request, TableParser
 from data.data import nhl
 
 

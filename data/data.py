@@ -20,4 +20,4 @@ def load_sport(sport_name, data_path):
 
 # Sports objects
 nhl = load_sport("nhl", DATA_PATH)
-#nba = load_sport("nba", DATA_PATH)
+nba = load_sport("nba", DATA_PATH)

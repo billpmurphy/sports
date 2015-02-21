@@ -56,7 +56,7 @@ def main():
                              page)
 
                 scraped_wagers = site.extract_wagers_for_sport(sport, page)
-
+                print site, len(scraped_wagers)
                 if len(scraped_wagers) > 0:
                     archive_pickle(ARCHIVE_PATH, "%s_%s_wagers" %
                                    (site.name, sport.sport_name),
