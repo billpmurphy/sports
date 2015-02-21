@@ -1,5 +1,7 @@
+*.html
 *.log
 *.pyc
 *.pickle
+*.swo
 archive/*
 logs/*

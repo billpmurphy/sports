@@ -6,11 +6,12 @@ from time import sleep
 from app.utils import archive_page, archive_pickle
 from app.sports import find_arb_pairs
 from data.data import nhl
+from scrapers.bodog import bodog
 from scrapers.bovada import bovada
 from scrapers.mybookie import mybookie
-from scrapers.topbet import topbet
-from scrapers.bodog import bodog
+from scrapers.sportsbook import sportsbook
 from scrapers.sportsinteraction import sportsinteraction
+from scrapers.topbet import topbet
 
 
 ARCHIVE_PATH = "archive/"
@@ -41,7 +42,7 @@ def main():
 
     # Scrape all the sites we know, check for arbs
     sports = [nhl]
-    sites = [bovada, mybookie, topbet, bodog, sportsinteraction]
+    sites = [bovada, mybookie, topbet, bodog, sportsinteraction, sportsbook]
 
     while True:
         for sport in sports:
@@ -65,8 +66,8 @@ def main():
             arb_pairs = find_arb_pairs(wagers)
             logger.info("Arb pairs for %s: %s", sport.sport_name, arb_pairs)
         logger.info("Sleeping for %s seconds.", wait_time)
-        return
         sleep(wait_time)
+        print ""
 
 
 if __name__ == "__main__":

@@ -122,7 +122,7 @@ def parse_moneyline(string):
         line = float(string[1:])
         if string[0] == '+':
             return line/100.0
-        elif string[0] == '-':
+        else:
             return 100.0/line
     elif re.match("[0-9]+?", string):
         line = float(string)
