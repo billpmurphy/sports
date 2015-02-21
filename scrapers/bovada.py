@@ -9,7 +9,7 @@ def bovada_nhl_extractor(page):
     tables = tp.get_tables()
 
     # Get rid of garbage lines in the table
-    tables = tables[1:-1]
+    tables = tables[1:]
     for i, t in enumerate(tables):
         tables[i] = max(t, key=lambda x: len(x))
 

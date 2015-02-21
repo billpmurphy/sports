@@ -14,10 +14,18 @@ def mybookie_nhl_extractor(page):
     # Find team names and moneylines
     pairs = []
     for i in range(len(tables)/2):
-        name1 = tables[i*2][2].strip().split(" ")[-1]
-        name2 = tables[i*2+1][1].strip().split(" ")[-1]
+        name1 = tables[i*2][2].strip().split(" ")
+        name1 = name1[0] if len(name1) == 1 else " ".join(name1[1:])
+
+        name2 = tables[i*2+1][1].strip().split(" ")
+        name2 = name2[0] if len(name2) == 1 else " ".join(name2[1:])
+
         moneyline1 = str(tables[i*2][-1]).strip()
         moneyline2 = str(tables[i*2+1][-1]).strip()
+
+        if moneyline1 == '0' or moneyline2 == '0':
+            continue
+
         pairs.append(((name1, moneyline1), (name2, moneyline2)))
     return pairs
 
