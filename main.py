@@ -11,6 +11,7 @@ from scrapers.bodog import bodog
 from scrapers.bovada import bovada
 from scrapers.mybookie import mybookie
 from scrapers.sportsbook import sportsbook
+from scrapers.sportsbetting import sportsbetting
 from scrapers.sportsinteraction import sportsinteraction
 from scrapers.topbet import topbet
 
@@ -44,7 +45,7 @@ def main():
     # Scrape all the sites we know, check for arbs
     sports = [nhl]
     sites = [bovada, mybookie, topbet, bodog, sportsinteraction, sportsbook,
-             betdsi]
+             betdsi, sportsbetting]
 
     while True:
         for sport in sports:

@@ -21,22 +21,23 @@ Eventual goal:
 
 Notes on sites:
 
-| Site                            | NHL | NBA | JS? |
-| ------------------------------- | --- | --- | --- |
-|http://www.bovada.lv             |  x  |     |  no |
-|http://mybookie.ag               |  x  |     |  no |
-|http://topbet.eu/sportsbook      |  x  |     |  no |
-|http://sports.bodog.eu           |  x  |     |  no |
-|http://www.sportsinteraction.com |  x  |     |  no |
-|https://www.sportsbook.ag        |  x  |     |  no |
-|http://www.betdsi.eu             |  x  |     |  no |
-|http://www.sportsbetting.ag      |  x  |     | yes |
-|http://www.pinnaclesports.com    |     |     |  no |
-|https://sports.bwin.com          |     |     |  no |
-|http://www.betus.com.pa          |     |     |  no |
-|http://www.betonline.ag          |     |     | yes |
-|http://www.bookmaker.eu          |     |     | yes |
-|http://www.5dimes.eu             |     |     | yes |
-|http://www.sportsbettingonline.ag|     |     | yes |
-|http://www.vietbet.eu            |     |     | yes |
-|http://www.wagerweb.ag           |     |     | yes |
+| Site                            | NHL | NBA | JS? | Notes |
+| ------------------------------- | --- | --- | --- | |
+|http://www.bovada.lv             |  x  |     |  no | |
+|http://mybookie.ag               |  x  |     |  no | |
+|http://topbet.eu/sportsbook      |  x  |     |  no | |
+|http://sports.bodog.eu           |  x  |     |  no | |
+|http://www.sportsinteraction.com |  x  |     |  no | |
+|https://www.sportsbook.ag        |  x  |     |  no | |
+|http://www.betdsi.eu             |  x  |     |  no | |
+|http://www.sportsbetting.ag      |  x  |     | yes | selenium |
+|http://www.pinnaclesports.com    |     |     |  no | has API |
+|https://sports.bwin.com          |     |     |  no | |
+|http://www.betonline.ag          |     |     | yes | |
+|http://www.bookmaker.eu          |     |     | yes | |
+|http://www.5dimes.eu             |     |     | yes | |
+|http://www.sportsbettingonline.ag|     |     | yes | complex JS |
+|http://www.wagerweb.ag           |     |     | yes | Login only |
+|http://www.betus.com.pa          |     |     |  no | Login only |
+|http://www.vietbet.eu            |     |     | yes | Login only |
+|https://www.betfair.com          |     |     |  no | UK only |
